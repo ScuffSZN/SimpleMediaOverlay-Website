@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple Music Overlay</title>
+    <link rel="stylesheet" href="./overlay.css">
+  </head>
+  <body>
+    <div class="card mr hidden">
+      <div class="card-images"></div>
+      <div class="card-body" style="width: 430px;">
+        <div class="card-body-title">Loading</div>
+        <div class="card-body-album">...</div>
+        <div class="card-body-time">
+          <span>0:00</span>
+          <div class="card-body-progressbar"></div>
+          <div class="card-body-progressbar-inner"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+
+  var title = document.querySelector(".card-body-title"),
+      card = document.querySelector(".mr"),
+      artist = document.querySelector(".card-body-album"),
+      time = document.querySelector(".card-body-time span"),
+      progress = document.querySelector(".card-body-progressbar-inner"),
+      artwork = document.querySelector(".card-images");//hms
+
+      var socks,
+          j = {
+              "title":"",
+              "artist":"",
+              "cover":"",
+              "duration":"",
+              "currentTime":"",
+              "state":0
+          },
+          lastState,
+          connect = () => {
+              socks = new WebSocket("ws://localhost:8974");
+
+              socks.onopen = function() {
+                  if(socks.readyState != 1)
+                      setTimeout(connect, 1000);
+              };
+
+              socks.onmessage = function(e) {
+                  newMessage(e.data)
+              };
+
+              socks.onclose = function(e) {
+                  if(socks.readyState != 1)
+                      setTimeout(connect, 1000);
+              };
+
+              socks.onerror = function(err) {
+                  socks.close();
+              };
+
+          }
+      connect();
+
+
+    function newMessage(data) {
+        jsonData = JSON.parse(data);
+        title.innerHTML = jsonData.title;
+        artist.innerHTML = jsonData.artist;
+        setArtwork(jsonData.cover);
+        time.innerHTML = jsonData.currentTime+" / "+jsonData.duration;
+        progress.style.width = ((hms(jsonData.currentTime)/hms(jsonData.duration))*100) + "%";
+        if(jsonData.state == 1) {
+          card.classList.remove('hidden');
+        } else if(jsonData.state == 0) {
+          card.classList.add('hidden');
+        }
+        if(jsonData.cover.length == 0 || getpar("cover") != "true") {
+          document.querySelector('.card-body').style.width = '450px';
+          artwork.style.width = '0px';
+        } else if(getpar("cover") == "true") {
+          document.querySelector('.card-body').style.width = '395px';
+          artwork.style.width = '55px';
+        }
+
+      if(getpar("dark") == "true" ) {
+        card.classList.add('dark');
+      } else {
+        card.classList.remove('dark');
+      }
+    };
+
+    function hms(str) {
+        var p = str.split(':'),
+            s = 0, m = 1;
+        while (p.length > 0) {
+            s += m * parseInt(p.pop(), 10);
+            m *= 60;
+        }
+        return s;
+    }
+
+
+    function getpar(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
+
+    function setArtwork(e) {
+      artwork.style.backgroundImage = "url("+e+")"
+    }
+    </script>
+  </body>
+</html>
+
+

@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+  <title>Setup - SimpleMediaOverlay</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <nav>
+    <div class="left">
+      <a class="navlink brand" href="/">SimpleMediaOverlay</a>
+    </div>
+    <div class="right">
+      <a class="navlink" href="/">Home</a>
+      <a class="navlink" href="/setup">Setup</a>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Setup</h1>
+    <section class="content">
+      <div class="embedurl">
+          <div class="urlcontainer">
+            <span>Overlay Link</span>
+            <input type="text" value="https://smo.scuffed.dev/overlay">
+          </div>
+      </div>
+      
+      <div class="player">
+        <div class="card-images"></div>
+        <div class="card-body" style="width: 430px;">
+          <div class="card-body-title">Loading</div>
+          <div class="card-body-album">...</div>
+          <div class="card-body-time">
+            <span>0:00 / 0:00</span>
+            <div class="card-body-progressbar"></div>
+            <div class="card-body-progressbar-inner"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="settings">
+        <div>
+          <input type="checkbox" class="darkCheck" onclick="updateSettings()"> Dark Mode
+        </div>
+        <div>
+          <input type="checkbox" class="coverCheck" checked onclick="updateSettings()"> Show Cover Art
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="setup.js"></script>
+</body>
+
+</html>
